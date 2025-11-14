@@ -36,6 +36,10 @@
 extern int set_all_promisc();
 #endif
 
+#ifndef LINKTYPE_LINUX_SLL2
+# define LINKTYPE_LINUX_SLL2    (276)
+#endif
+
 #define int_ntoa(x)	inet_ntoa(*((struct in_addr *)&x))
 extern int ip_options_compile(unsigned char *);
 extern int raw_init();
@@ -650,8 +654,11 @@ int nids_init()
         nids_linkoffset = 4;
         break;
 #endif        
+    case LINKTYPE_LINUX_SLL2:
+	nids_linkoffset = 20;
+	break;
     default:
-	strcpy(nids_errbuf, "link type unknown");
+	snprintf(nids_errbuf, sizeof nids_errbuf, "link Type unknnown: %d", linktype);
 	return 0;
     }
     if (nids_params.dev_addon == -1) {
